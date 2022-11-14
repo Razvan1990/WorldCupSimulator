@@ -30,15 +30,16 @@ public class StatisticsHelper {
         return teams;
 
     }
+    
 
-    public int getNumberOfTeamGoals(List<List<LinkedHashMap<String, Integer>>> matchPhaseList, String teamName) {
+    public int getNumberOfTeamGoals(List<List<LinkedHashMap<String, List<Integer>>>> matchPhaseList, String teamName, int position ) {
         int nrTotalGoals = 0;
         //search in the big list till we find the key which has the same name as the team and get the number of points
-        for (List<LinkedHashMap<String, Integer>> l : matchPhaseList) {
-            for (LinkedHashMap<String, Integer> teamGoal : l) {
+        for (List<LinkedHashMap<String, List<Integer>>> l : matchPhaseList) {
+            for (LinkedHashMap<String, List<Integer>> teamGoal : l) {
                 for (String team : teamGoal.keySet()) {
                     if (Objects.equals(team, teamName)) {
-                        nrTotalGoals = teamGoal.get(team);
+                        nrTotalGoals = teamGoal.get(team).get(position);
                         break;
                     }
                 }
@@ -48,17 +49,36 @@ public class StatisticsHelper {
         return nrTotalGoals;
     }
 
-    public List<Integer> createListOfGoals(List<List<LinkedHashMap<String, Integer>>> list1, List<List<LinkedHashMap<String, Integer>>> list2,
-                                           List<List<LinkedHashMap<String, Integer>>> list3, List<List<LinkedHashMap<String, Integer>>> list4,
-                                           List<List<LinkedHashMap<String, Integer>>> list5, List<String> orderedTeams) {
+
+    public List<Integer> createListOfGoalsScored(List<List<LinkedHashMap<String, List<Integer>>>> list1, List<List<LinkedHashMap<String, List<Integer>>>> list2,
+                                                 List<List<LinkedHashMap<String, List<Integer>>>> list3, List<List<LinkedHashMap<String, List<Integer>>>> list4,
+                                                 List<List<LinkedHashMap<String, List<Integer>>>> list5, List<String> orderedTeams) {
         List<Integer> goals = new ArrayList<>();
         for (String orderedTeam : orderedTeams) {
             int totalGoals;
-            int phase1 = getNumberOfTeamGoals(list1, orderedTeam);
-            int phase2 = getNumberOfTeamGoals(list2, orderedTeam);
-            int phase3 = getNumberOfTeamGoals(list3, orderedTeam);
-            int phase4 = getNumberOfTeamGoals(list4, orderedTeam);
-            int phase5 = getNumberOfTeamGoals(list5, orderedTeam);
+            int phase1 = getNumberOfTeamGoals(list1, orderedTeam,0);
+            int phase2 = getNumberOfTeamGoals(list2, orderedTeam,0);
+            int phase3 = getNumberOfTeamGoals(list3, orderedTeam,0);
+            int phase4 = getNumberOfTeamGoals(list4, orderedTeam,0);
+            int phase5 = getNumberOfTeamGoals(list5, orderedTeam,0);
+            totalGoals = phase1 + phase2 + phase3 + phase4 + phase5;
+            goals.add(totalGoals);
+
+        }
+        return goals;
+    }
+
+    public List<Integer> createListOfGoalsReceived(List<List<LinkedHashMap<String, List<Integer>>>> list1, List<List<LinkedHashMap<String, List<Integer>>>> list2,
+                                                   List<List<LinkedHashMap<String, List<Integer>>>> list3, List<List<LinkedHashMap<String, List<Integer>>>> list4,
+                                                   List<List<LinkedHashMap<String, List<Integer>>>> list5, List<String> orderedTeams) {
+        List<Integer> goals = new ArrayList<>();
+        for (String orderedTeam : orderedTeams) {
+            int totalGoals;
+            int phase1 = getNumberOfTeamGoals(list1, orderedTeam,1);
+            int phase2 = getNumberOfTeamGoals(list2, orderedTeam,1);
+            int phase3 = getNumberOfTeamGoals(list3, orderedTeam,1);
+            int phase4 = getNumberOfTeamGoals(list4, orderedTeam,1);
+            int phase5 = getNumberOfTeamGoals(list5, orderedTeam,1);
             totalGoals = phase1 + phase2 + phase3 + phase4 + phase5;
             goals.add(totalGoals);
 
@@ -77,35 +97,40 @@ public class StatisticsHelper {
         return sortedMap;
     }
 
-    public void printStatsCorrectly(LinkedHashMap<String, Integer> map, LinkedHashMap<String, Integer> map2) {
+    public void printStatsCorrectly(LinkedHashMap<String, List<Integer>> map, LinkedHashMap<String, Integer> map2) {
         List<String> computedWritting = makePlayerNameGoalPrintCorrectly(map, map2);
         int index = 0;
         for (String key : map.keySet()) {
             if (key.length() <= 6) {
-                System.out.println(key + ":\t\t\t\t" + map.get(key) + " goals" + computedWritting.get(index));
+                System.out.println(key + ":\t\t\t\t" + map.get(key).get(0) + " goals" + "|" + map.get(key).get(1) + " goals" + computedWritting.get(index));
+                //special case
+            } else if (key.equals("Portugal")) {
+                System.out.println(key + "\t\t\t" + map.get(key).get(0) + " goals" + "|" + map.get(key).get(1) + " goals" + computedWritting.get(index));
+            } else if (key.length() <= 8) {
+                System.out.println(key + "\t\t\t\t" + map.get(key).get(0) + " goals" + "|" + map.get(key).get(1) + " goals" + computedWritting.get(index));
             } else if (key.length() <= 10) {
-                System.out.println(key + "\t\t\t" + map.get(key) + " goals" + computedWritting.get(index));
-            } else {
-                System.out.println(key + "\t\t" + map.get(key) + " goals" + computedWritting.get(index));
+                System.out.println(key + "\t\t\t" + map.get(key).get(0) + " goals" + "|" + map.get(key).get(1) + " goals" + computedWritting.get(index));
             }
+
             index++;
 
         }
     }
 
-    public List<String> makePlayerNameGoalPrintCorrectly(LinkedHashMap<String, Integer> map, LinkedHashMap<String, Integer> map2) {
+    public List<String> makePlayerNameGoalPrintCorrectly(LinkedHashMap<String, List<Integer>> map, LinkedHashMap<String, Integer> map2) {
         //get the keys in a list and values in another list to easily iterate
         String player;
         List<String> results = new ArrayList<>();
         List<String> keysList = new ArrayList<>(map2.keySet());
         List<Integer> valuesList = new ArrayList<>(map2.values());
-        List<Integer> goalsNation = new ArrayList<>(map.values());
+        List<Integer> goalsNationScored = getGoalsScoredByTeam(map, 0);
+        List<Integer> goalsNationRecieved = getGoalsScoredByTeam(map, 1);
         int index = 0;
         while (index < valuesList.size()) {
-            if (goalsNation.get(index) < 10) {
-                player = "\t\t\t\t\t\t\t" + keysList.get(index) + " - " + valuesList.get(index) + " goals";
+            if (goalsNationScored.get(index) < 10 && goalsNationRecieved.get(index)<10) {
+                player = "\t\t\t\t\t\t\t\t" + keysList.get(index) + " - " + valuesList.get(index) + " goals";
             } else {
-                player = "\t\t\t\t\t\t" + keysList.get(index) + " - " + valuesList.get(index) + " goals";
+                player = "\t\t\t\t\t\t\t" + keysList.get(index) + " - " + valuesList.get(index) + " goals";
             }
             results.add(player);
             index++;
@@ -119,6 +144,15 @@ public class StatisticsHelper {
             System.out.print(index + "." + player + " - " + map.get(player) + " goals" + "\t\t");
             index++;
         }
+    }
+
+    List<Integer> getGoalsScoredByTeam(LinkedHashMap<String, List<Integer>> list, int position) {
+        List<Integer> goalsTeam = new ArrayList<>();
+        for (String key : list.keySet()) {
+            int temp = list.get(key).get(position);
+            goalsTeam.add(temp);
+        }
+        return goalsTeam;
     }
 
 }
