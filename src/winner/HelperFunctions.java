@@ -28,11 +28,11 @@ public class HelperFunctions {
         }
     }
 
-    public void getQualifiedTeams(LinkedHashMap<String, List<Integer>> rankings, List<LinkedHashMap<String, Integer>> qualifiedTeams) {
+    public void getQualifiedTeams(LinkedHashMap<String, List<Integer>> rankings, List<LinkedHashMap<String, List<Integer>>> qualifiedTeams) {
         int counter = 0;
         for (String key : rankings.keySet()) {
-            LinkedHashMap<String, Integer> temp = new LinkedHashMap<>();
-            temp.put(key, rankings.get(key).get(1));
+            LinkedHashMap<String, List<Integer>> temp = new LinkedHashMap<>();
+            temp.put(key, Arrays.asList(rankings.get(key).get(1), rankings.get(key).get(2)));
             qualifiedTeams.add(temp);
             counter++;
             if (counter == 2) {
@@ -41,14 +41,14 @@ public class HelperFunctions {
         }
     }
 
-    public void getNonQualifiedTeams(LinkedHashMap<String, List<Integer>> rankings, List<LinkedHashMap<String, Integer>> nonQualifiedTeams) {
+    public void getNonQualifiedTeams(LinkedHashMap<String, List<Integer>> rankings, List<LinkedHashMap<String, List<Integer>>> nonQualifiedTeams) {
         int counter = 0;
         int index = 0;
         for (String key : rankings.keySet()) {
             index++;
             if (index > 2) {
-                LinkedHashMap<String, Integer> temp = new LinkedHashMap<>();
-                temp.put(key, rankings.get(key).get(1));
+                LinkedHashMap<String, List<Integer>> temp = new LinkedHashMap<>();
+                temp.put(key,Arrays.asList(rankings.get(key).get(1), rankings.get(key).get(2)));
                 nonQualifiedTeams.add(temp);
                 counter++;
                 if (counter == 2) {
@@ -65,11 +65,11 @@ public class HelperFunctions {
         }
         sortList(pointsList);
         LinkedHashMap<String, List<Integer>> standingsMap = new LinkedHashMap<>();
-        for (int i = 0; i < pointsList.size(); i++) {
+        for (Integer integer : pointsList) {
             for (String key : standings.keySet()) {
                 //check if the number of points of that team is equal to the value from that index of the list and also to not contain already the key
-                if (Objects.equals(standings.get(key).get(0), pointsList.get(i)) && !standingsMap.containsKey(key)) {
-                    List<Integer> list = Arrays.asList(standings.get(key).get(0), standings.get(key).get(1));
+                if (Objects.equals(standings.get(key).get(0), integer) && !standingsMap.containsKey(key)) {
+                    List<Integer> list = Arrays.asList(standings.get(key).get(0), standings.get(key).get(1), standings.get(key).get(2));
                     standingsMap.put(key, list);
                 }
             }
