@@ -39,10 +39,10 @@ public class ScoreGenerator {
             int sumTeamB = 0;
             int sumTeamC = 0;
             int sumTeamD = 0;
-            int goalsTeamA = 0;
-            int goalsTeamB = 0;
-            int goalsTeamC = 0;
-            int goalsTeamD = 0;
+            int goalsTeamA = 0;int goalsReceivedTeamA =0;
+            int goalsTeamB = 0;int goalsReceivedTeamB =0;
+            int goalsTeamC = 0;int goalsReceivedTeamC =0;
+            int goalsTeamD = 0;int goalsReceivedTeamD =0;
             //Create a list of 6 lists of scores of size 2 -> every list is a result basically
             for (int i = 0; i < results.size(); i++) {
                 int random = (int) Math.floor(Math.random() * results.size());
@@ -67,6 +67,8 @@ public class ScoreGenerator {
             int compare = helper.computeResults(matchesList.get(0).get(0), matchesList.get(0).get(1));
             goalsTeamA += matchesList.get(0).get(0);
             goalsTeamB += matchesList.get(0).get(1);
+            goalsReceivedTeamA += matchesList.get(0).get(1);
+            goalsReceivedTeamB += matchesList.get(0).get(0);
             if (compare == 1) {
                 sumTeamA += 3;
             } else if (compare == 2) {
@@ -81,6 +83,8 @@ public class ScoreGenerator {
             compare = helper.computeResults(matchesList.get(1).get(0), matchesList.get(1).get(1));
             goalsTeamC += matchesList.get(1).get(0);
             goalsTeamD += matchesList.get(1).get(1);
+            goalsReceivedTeamC += matchesList.get(1).get(1);
+            goalsReceivedTeamD += matchesList.get(1).get(0);
             if (compare == 1) {
                 sumTeamC += 3;
             } else if (compare == 2) {
@@ -95,6 +99,9 @@ public class ScoreGenerator {
             compare = helper.computeResults(matchesList.get(2).get(0), matchesList.get(2).get(1));
             goalsTeamA += matchesList.get(2).get(0);
             goalsTeamC += matchesList.get(2).get(1);
+            goalsReceivedTeamA += matchesList.get(2).get(1);
+            goalsReceivedTeamC += matchesList.get(2).get(0);
+
             if (compare == 1) {
                 sumTeamA += 3;
             } else if (compare == 2) {
@@ -109,6 +116,8 @@ public class ScoreGenerator {
             compare = helper.computeResults(matchesList.get(3).get(0), matchesList.get(3).get(1));
             goalsTeamB += matchesList.get(3).get(0);
             goalsTeamD += matchesList.get(3).get(1);
+            goalsReceivedTeamB += matchesList.get(3).get(1);
+            goalsReceivedTeamD += matchesList.get(3).get(0);
             if (compare == 1) {
                 sumTeamB += 3;
             } else if (compare == 2) {
@@ -123,6 +132,8 @@ public class ScoreGenerator {
             compare = helper.computeResults(matchesList.get(4).get(0), matchesList.get(4).get(1));
             goalsTeamA += matchesList.get(4).get(0);
             goalsTeamD += matchesList.get(4).get(1);
+            goalsReceivedTeamA += matchesList.get(4).get(1);
+            goalsReceivedTeamD += matchesList.get(4).get(0);
             if (compare == 1) {
                 sumTeamA += 3;
             } else if (compare == 2) {
@@ -137,6 +148,8 @@ public class ScoreGenerator {
             compare = helper.computeResults(matchesList.get(5).get(0), matchesList.get(5).get(1));
             goalsTeamB += matchesList.get(5).get(0);
             goalsTeamC += matchesList.get(5).get(1);
+            goalsReceivedTeamB += matchesList.get(5).get(1);
+            goalsReceivedTeamC += matchesList.get(5).get(0);
             if (compare == 1) {
                 sumTeamB += 3;
             } else if (compare == 2) {
@@ -147,10 +160,10 @@ public class ScoreGenerator {
             }
 
 
-            teamResults.put(t1, Arrays.asList(sumTeamA, goalsTeamA));
-            teamResults.put(t2, Arrays.asList(sumTeamB, goalsTeamB));
-            teamResults.put(t3, Arrays.asList(sumTeamC, goalsTeamC));
-            teamResults.put(t4, Arrays.asList(sumTeamD, goalsTeamD));
+            teamResults.put(t1, Arrays.asList(sumTeamA, goalsTeamA, goalsReceivedTeamA));
+            teamResults.put(t2, Arrays.asList(sumTeamB, goalsTeamB, goalsReceivedTeamB));
+            teamResults.put(t3, Arrays.asList(sumTeamC, goalsTeamC, goalsReceivedTeamC));
+            teamResults.put(t4, Arrays.asList(sumTeamD, goalsTeamD, goalsReceivedTeamD));
             return teamResults;
 
         } catch (InterruptedException e) {
@@ -159,29 +172,29 @@ public class ScoreGenerator {
         return null;
     }
 
-    public List<LinkedHashMap<String, Integer>> getQualifiedTeamsFromKnockouts(LinkedHashMap<String, Integer> map1, LinkedHashMap<String, Integer> map2) {
+    public List<LinkedHashMap<String, List<Integer>>> getQualifiedTeamsFromKnockouts(LinkedHashMap<String, List<Integer>> map1, LinkedHashMap<String, List<Integer>> map2) {
         List<String> keyA = new ArrayList<>(map1.keySet());
         String a = keyA.get(0);
         List<String> keyB = new ArrayList<>(map2.keySet());
         String b = keyB.get(0);
         int resultTeamA = getGeneratedScore();
         int resultTeamB = getGeneratedScore();
-        LinkedHashMap<String, Integer> qualified = new LinkedHashMap<>();
-        LinkedHashMap<String, Integer> notQualifed = new LinkedHashMap<>();
-        List<LinkedHashMap<String, Integer>> knockoutTeamsGoals = new ArrayList<>();
+        LinkedHashMap<String, List<Integer>> qualified = new LinkedHashMap<>();
+        LinkedHashMap<String, List<Integer>> notQualifed = new LinkedHashMap<>();
+        List<LinkedHashMap<String, List<Integer>>> knockoutTeamsGoals = new ArrayList<>();
         int finalResultA;
         int finalResultB;
         if (resultTeamA > resultTeamB) {
             System.out.println(a + " " + resultTeamA + " - " + resultTeamB + " " + b);
-            qualified.put(a, resultTeamA);
-            notQualifed.put(b, resultTeamB);
+            qualified.put(a, Arrays.asList(resultTeamA, resultTeamB));
+            notQualifed.put(b, Arrays.asList(resultTeamB, resultTeamA));
             knockoutTeamsGoals.add(qualified);
             knockoutTeamsGoals.add(notQualifed);
             return knockoutTeamsGoals;
         } else if (resultTeamB > resultTeamA) {
             System.out.println(a + " " + resultTeamA + " - " + resultTeamB + " " + b);
-            qualified.put(b, resultTeamB);
-            notQualifed.put(a, resultTeamA);
+            qualified.put(b, Arrays.asList(resultTeamB, resultTeamA));
+            notQualifed.put(a, Arrays.asList(resultTeamA, resultTeamB));
             knockoutTeamsGoals.add(qualified);
             knockoutTeamsGoals.add(notQualifed);
             return knockoutTeamsGoals;
@@ -207,16 +220,16 @@ public class ScoreGenerator {
             finalResultB = resultTeamB + penalty2;
             if (finalResultA > finalResultB) {
                 System.out.println(a + " " + resultTeamA + " - " + resultTeamB + " " + b + "-> " + a + " won on penalty with " + finalResultA + " - " + finalResultB);
-                qualified.put(a, resultTeamA);
-                notQualifed.put(b, resultTeamB);
+                qualified.put(a, Arrays.asList(resultTeamA, resultTeamB));
+                notQualifed.put(b, Arrays.asList(resultTeamB, resultTeamA));
                 knockoutTeamsGoals.add(qualified);
                 knockoutTeamsGoals.add(notQualifed);
                 return knockoutTeamsGoals;
 
             } else {
                 System.out.println(a + " " + resultTeamA + " - " + resultTeamB + " " + b + "-> " + b + " won on penalty with " + finalResultB + " - " + finalResultA);
-                qualified.put(b, resultTeamB);
-                notQualifed.put(a, resultTeamA);
+                qualified.put(b, Arrays.asList(resultTeamB, resultTeamA));
+                notQualifed.put(a, Arrays.asList(resultTeamA, resultTeamB));
                 knockoutTeamsGoals.add(qualified);
                 knockoutTeamsGoals.add(notQualifed);
                 return knockoutTeamsGoals;
