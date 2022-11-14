@@ -4,6 +4,7 @@ import statistics.GoalsAndStrikers;
 import statistics.StatisticsHelper;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class Computations {
 
@@ -17,7 +18,7 @@ public class Computations {
 
     public void computeThings() {
         try {
-            LinkedHashMap<String, Integer> goalsTeam = goalsAndStrikers.computeNumberOfGoalsPerTeam();
+            LinkedHashMap<String, List<Integer>> goalsTeam = goalsAndStrikers.computeNumberOfGoalsPerTeam();
             LinkedHashMap<String, Integer> playerGoals = goalsAndStrikers.createPlayerGoalsScoredMap(goalsTeam);
             LinkedHashMap<String, Integer> topScorers = goalsAndStrikers.getTopScorers(playerGoals);
 
@@ -25,7 +26,7 @@ public class Computations {
             System.out.println("\nFinal World Cup stats:...");
             Thread.sleep(1000);
 
-            System.out.println("TEAM\t\t\t\tGOALS SCORED\t\t\t\t\tPERFORMANCE TOP PLAYERS");
+            System.out.println("TEAM\t\t\t\tGOALS SCORED|GOALS RECEIVED\t\t\t\t\tPERFORMANCE TOP PLAYERS");
             statisticsHelper.printStatsCorrectly(goalsTeam, playerGoals);
             Thread.sleep(1000);
             System.out.println("\n Top scorers of Qatar World Cup 2022");
